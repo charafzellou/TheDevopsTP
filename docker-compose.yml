@@ -1,0 +1,32 @@
+version: '3'
+services:
+  sql:
+    container_name: mypostgres
+    image: charafzellou/mypostgres
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=toortoor
+    volumes:
+      - /mypostgres/data:/var/lib/postgresql/data
+    networks:
+      - br0
+  api:
+    container_name: simple-api
+    image: charafzellou/simple-api
+    depends_on:
+      - sql
+    networks:
+      - br0
+  web:
+    container_name: myhttpd
+    image: charafzellou/myhttpd
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - br0
+networks:
+  br0:
+    driver: bridge
